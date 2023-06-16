@@ -4,7 +4,11 @@ import pool from '@ricokahler/pool';
 import AsyncLock from 'async-lock';
 
 import { FlashBot } from '../typechain/FlashBot';
-import { Network, tryLoadPairs, getTokens } from './tokens';
+import {
+  Network,
+  tryLoadPairs,
+  getTokens
+} from './tokens';
 import { getBnbPrice } from './basetoken-price';
 import log from './log';
 import config from './config';
@@ -26,7 +30,11 @@ async function calcNetProfit(profitWei: BigNumber, address: string, baseTokens: 
 }
 
 function arbitrageFunc(flashBot: FlashBot, baseTokens: Tokens) {
-  const lock = new AsyncLock({ timeout: 2000, maxPending: 20 });
+  const lock = new AsyncLock({
+    timeout: 2000,
+    maxPending: 20
+  });
+
   return async function arbitrage(pair: ArbitragePair) {
     const [pair0, pair1] = pair.pairs;
 
@@ -34,11 +42,12 @@ function arbitrageFunc(flashBot: FlashBot, baseTokens: Tokens) {
       profit: BigNumber;
       baseToken: string;
     };
+    
     try {
       res = await flashBot.getProfit(pair0, pair1);
       log.debug(`Profit on ${pair.symbols}: ${ethers.utils.formatEther(res.profit)}`);
-    } catch (err) {
-      log.debug(err);
+    } catch (error) {
+      log.debug(error);
       return;
     }
 
@@ -50,20 +59,20 @@ function arbitrageFunc(flashBot: FlashBot, baseTokens: Tokens) {
 
       log.info(`Calling flash arbitrage, net profit: ${netProfit}`);
       try {
-        // lock to prevent tx nonce overlap
+        // Lock to prevent tx nonce overlap
         await lock.acquire('flash-bot', async () => {
           const response = await flashBot.flashArbitrage(pair0, pair1, {
             gasPrice: config.gasPrice,
-            gasLimit: config.gasLimit,
+            gasLimit: config.gasLimit
           });
           const receipt = await response.wait(1);
           log.info(`Tx: ${receipt.transactionHash}`);
         });
-      } catch (err) {
-        if (err.message === 'Too much pending tasks' || err.message === 'async-lock timed out') {
+      } catch (error: any) {
+        if (error.message === 'Too much pending tasks' || error.message === 'async-lock timed out') {
           return;
         }
-        log.error(err);
+        log.error(error);
       }
     }
   };
@@ -71,15 +80,15 @@ function arbitrageFunc(flashBot: FlashBot, baseTokens: Tokens) {
 
 async function main() {
   const pairs = await tryLoadPairs(Network.BSC);
-  const flashBot = (await ethers.getContractAt('FlashBot', config.contractAddr)) as FlashBot;
+  const flashBot = (await ethers.getContractAt('FlashBot', config.contractAddress)) as FlashBot;
   const [baseTokens] = getTokens(Network.BSC);
 
   log.info('Start arbitraging');
   while (true) {
     await pool({
-      collection: pairs,
-      task: arbitrageFunc(flashBot, baseTokens),
       // maxConcurrency: config.concurrency,
+      collection: pairs,
+      task: arbitrageFunc(flashBot, baseTokens)
     });
     await sleep(1000);
   }
