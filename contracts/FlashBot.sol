@@ -215,7 +215,7 @@ contract FlashBot is Ownable {
             callbackData.debtTokenOutAmount = baseTokenOutAmount;
 
             bytes memory data = abi.encode(callbackData);
-            IUniswapV2Pair(info.lowerPool).swap(amount0Out, amount1Out, address(this), data);
+            IUniswapV2Pair(info.lowerPool).swap(amount0Out, amount1Out, address(this), data); // RE: https://docs.uniswap.org/contracts/v2/guides/smart-contract-integration/using-flash-swaps
         }
 
         uint256 balanceAfter = IERC20(info.baseToken).balanceOf(address(this));
