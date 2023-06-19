@@ -8,7 +8,7 @@ import { ethers } from 'hardhat';
 import log from './log';
 
 export enum Network {
-  BSC = 'bsc',
+  BSC = 'bsc'
 }
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -16,7 +16,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const bscBaseTokens: Tokens = {
   wbnb: { symbol: 'WBNB', address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c' },
   usdt: { symbol: 'USDT', address: '0x55d398326f99059ff775485246999027b3197955' },
-  busd: { symbol: 'BUSD', address: '0xe9e7cea3dedca5984780bafc599bd69add087d56' },
+  busd: { symbol: 'BUSD', address: '0xe9e7cea3dedca5984780bafc599bd69add087d56' }
 };
 
 const bscQuoteTokens: Tokens = {
@@ -74,16 +74,16 @@ const bscQuoteTokens: Tokens = {
   lit: { symbol: 'LIT', address: '0xb59490aB09A0f526Cc7305822aC65f2Ab12f9723' },
   alice: { symbol: 'ALICE', address: '0xac51066d7bec65dc4589368da368b212745d63e8' },
   reef: { symbol: 'REEF', address: '0xf21768ccbc73ea5b6fd3c687208a7c2def2d966e' },
-  pet: { symbol: 'PET', address: '0x4d4e595d643dc61ea7fcbf12e4b1aaa39f9975b8' },
+  pet: { symbol: 'PET', address: '0x4d4e595d643dc61ea7fcbf12e4b1aaa39f9975b8' }
 };
 
 const bscDexes: AmmFactories = {
+  // value: '0x1B8E12F839BD4e73A47adDF76cF7F0097d74c14C',
   pancake: '0xBCfCcbde45cE874adCB698cC183deBcF17952812',
   mdex: '0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8',
   bakery: '0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7',
   julswap: '0x553990F2CBA90272390f62C5BDb1681fFc899675',
-   apeswap: '0x0841BD0B734E4F5853f0dD8d7Ea041c241fb0Da6',
-  // value: '0x1B8E12F839BD4e73A47adDF76cF7F0097d74c14C',
+  apeswap: '0x0841BD0B734E4F5853f0dD8d7Ea041c241fb0Da6'
 };
 
 function getFactories(network: Network): AmmFactories {
