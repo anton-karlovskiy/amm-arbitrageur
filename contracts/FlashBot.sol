@@ -37,6 +37,13 @@ struct CallbackData {
     uint256 debtTokenOutAmount;
 }
 
+struct Adjustments {
+    address adjustmentPool;
+    address adjustmentToken0;
+    uint256 adjustment0;
+    uint256 adjustment1;
+}
+
 contract FlashBot is Ownable {
     using Decimal for Decimal.D256;
     using SafeMath for uint256;
@@ -141,6 +148,7 @@ contract FlashBot is Ownable {
     function getOrderedReserves(
         address pool0,
         address pool1,
+        Adjustments memory adjustment,
         bool baseTokenSmaller
     )
         internal
@@ -153,6 +161,24 @@ contract FlashBot is Ownable {
     {
         (uint256 pool0Reserve0, uint256 pool0Reserve1, ) = IUniswapV2Pair(pool0).getReserves();
         (uint256 pool1Reserve0, uint256 pool1Reserve1, ) = IUniswapV2Pair(pool1).getReserves();
+
+        if (pool0 == adjustment.adjustmentPool) {
+            if (adjustment.adjustmentToken0 == IUniswapV2Pair(pool0).token0()) {
+                pool0Reserve0 -= adjustment.adjustment0;
+                pool0Reserve1 += adjustment.adjustment1;
+            } else {
+                pool0Reserve1 -= adjustment.adjustment0;
+                pool0Reserve0 += adjustment.adjustment1;
+            }
+        } else {
+            if (adjustment.adjustmentToken0 == IUniswapV2Pair(pool1).token0()) {
+                pool1Reserve0 -= adjustment.adjustment0;
+                pool1Reserve1 += adjustment.adjustment1;
+            } else {
+                pool1Reserve1 -= adjustment.adjustment0;
+                pool1Reserve0 += adjustment.adjustment1;
+            }
+        }
 
         // Calculate the price denominated in the quote token
         (Decimal.D256 memory price0, Decimal.D256 memory price1) =
