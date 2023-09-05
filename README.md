@@ -10,7 +10,7 @@ An arbitrageur contract can be used to arbitrage between Uniswap V2 like AMMs. F
 
 ## The rationale
 
-There are a lot of AMMs on Ethereum and other blockchains that support EVM. Many of these AMMs are UniswapV2 fork projects or have the same interface with Uniswap V2. A list of these AMMs:
+There are a lot of AMMs on Ethereum and other blockchains that support EVM. Many of these AMMs are UniswapV2 fork projects or have the same interface as Uniswap V2. A list of these AMMs:
 
 - Uniswap V2 (Ethereum)
 - SushiSwap (Ethereum)
